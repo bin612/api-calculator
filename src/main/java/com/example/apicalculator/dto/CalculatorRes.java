@@ -7,7 +7,9 @@ public class CalculatorRes {
     private int result;
     private Result body;
 
+    @Data
     public static class Result {
         int responseResult;
+
     }
 }

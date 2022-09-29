@@ -35,6 +35,5 @@ public class CalculatorApiController {
         var body = new CalculatorRes.Result();
         body.setResponseResult(sum);
         return res;
-
     }
 }
