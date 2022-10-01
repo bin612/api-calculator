@@ -10,6 +10,5 @@ public class CalculatorRes {
     @Data
     public static class Result {
         int responseResult;
-
     }
 }

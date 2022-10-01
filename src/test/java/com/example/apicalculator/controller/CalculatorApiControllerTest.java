@@ -2,6 +2,8 @@ package com.example.apicalculator.controller;
 
 import com.example.apicalculator.service.DollarCalculator;
 import com.example.apicalculator.service.MarketServer;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -14,9 +16,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.util.LinkedMultiValueMap;
 
-
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 @WebMvcTest({CalculatorApiController.class})
 @AutoConfigureMockMvc
@@ -30,23 +31,22 @@ public class CalculatorApiControllerTest {
     private MarketServer marketServer;
 
     @Test
-    public void helloTest() throws Exception{
+    public void helloTest() throws Exception {
         mockMvc.perform(
             MockMvcRequestBuilders.get("/api/calculator/hello")
         ).andExpect(
-            MockMvcResultMatchers.status().isOk()
-        ).andExpect{
-            content().string("hello")
+            MockMvcResultMatchers.status().isOk() // 상태 값을 객체로 불러옴
         ).andDo(MockMvcResultHandlers.print());
     }
 
     @Test
     public void getTest() throws Exception {
-        when(marketServer.price()).thenReturn(3000);
+        when(marketServer.price()).thenReturn(1100);
 
-        LinkedMultiValueMap<String, String> map = new LinkedMultiValueMap();
+        LinkedMultiValueMap <String, String> map = new LinkedMultiValueMap();
+
         map.add("x","10");
-        map.add("y","10");
+        map.add("y","20");
 
         mockMvc.perform(
             MockMvcRequestBuilders.get("/api/calculator/sum").queryParams(map)
@@ -54,6 +54,17 @@ public class CalculatorApiControllerTest {
             MockMvcResultMatchers.status().isOk()
         ).andExpect(
             content().string("22000")
-        ).andDo(MockMvcResultHandlers.print());
+        ).andDo(
+            MockMvcResultHandlers.print()
+        );
+    }
+
+    @Test
+    public void postTest() throws Exception {
+        when(marketServer.price()).thenReturn(30000);
+
+        LinkedMultiValueMap <String, String> map = new LinkedMultiValueMap();
+
+
     }
 }
