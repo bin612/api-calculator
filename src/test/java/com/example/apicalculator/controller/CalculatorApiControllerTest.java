@@ -1,10 +1,12 @@
 package com.example.apicalculator.controller;
 
+import com.example.apicalculator.dto.CalculatorReq;
 import com.example.apicalculator.service.DollarCalculator;
 import com.example.apicalculator.service.MarketServer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -61,10 +63,26 @@ public class CalculatorApiControllerTest {
 
     @Test
     public void postTest() throws Exception {
-        when(marketServer.price()).thenReturn(30000);
+        when(marketServer.price()).thenReturn(1100);
 
-        LinkedMultiValueMap <String, String> map = new LinkedMultiValueMap();
+        CalculatorReq req = new CalculatorReq();
+        req.setX(10);
+        req.setY(10);
 
+        String json = new ObjectMapper().writeValueAsString(req);
+        System.out.println(json);
 
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/api/calculator/sum")
+            .content(json)
+            .contentType("application/json")
+            .accept("application/json")
+        ).andExpect(
+            MockMvcResultMatchers.status().isOk()
+        ).andExpect(
+            MockMvcResultMatchers.jsonPath("$.result").value("22000")
+        ).andExpect(
+            MockMvcResultMatchers.jsonPath("$.body.responseResult").value("22000")
+        ).andDo(MockMvcResultHandlers.print());
     }
 }
